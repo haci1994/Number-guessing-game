@@ -7,8 +7,118 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Game game = new Game();
+            List<Player> players = new List<Player>
+            {
+                new Player
+                {
+                    Name = "Elvin",
+                    GameRecords = new List<GameRecord>
+                    {
+                        new GameRecord { Hardness = "Easy", Score = 120, Attempts = 5, Won = true },
+                        new GameRecord { Hardness = "Normal", Score = 80, Attempts = 6, Won = false },
+                        new GameRecord { Hardness = "Difficult", Score = 150, Attempts = 7, Won = true },
+                    }
+                },
+                new Player
+                {
+                    Name = "Nigar",
+                    GameRecords = new List<GameRecord>
+                    {
+                        new GameRecord { Hardness = "Easy", Score = 100, Attempts = 4, Won = true },
+                        new GameRecord { Hardness = "Normal", Score = 90, Attempts = 5, Won = true },
+                    }
+                },
+                new Player
+                {
+                    Name = "Rəşad",
+                    GameRecords = new List<GameRecord>
+                    {
+                        new GameRecord { Hardness = "Normal", Score = 70, Attempts = 6, Won = false },
+                        new GameRecord { Hardness = "Difficult", Score = 180, Attempts = 8, Won = true },
+                        new GameRecord { Hardness = "Difficult", Score = 0, Attempts = 6, Won = false },
+                        new GameRecord { Hardness = "Easy", Score = 60, Attempts = 3, Won = true },
+                    }
+                },
+                new Player
+                {
+                    Name = "Günay",
+                    GameRecords = new List<GameRecord>
+                    {
+                        new GameRecord { Hardness = "Easy", Score = 90, Attempts = 4, Won = true },
+                        new GameRecord { Hardness = "Normal", Score = 100, Attempts = 5, Won = true },
+                        new GameRecord { Hardness = "Normal", Score = 60, Attempts = 6, Won = false },
+                    }
+                },
+                new Player
+                {
+                    Name = "Tural",
+                    GameRecords = new List<GameRecord>
+                    {
+                        new GameRecord { Hardness = "Easy", Score = 110, Attempts = 3, Won = true },
+                        new GameRecord { Hardness = "Difficult", Score = 0, Attempts = 6, Won = false },
+                    }
+                }
+            };
 
-            game.StartGame(null, Hardness.Normal);
+            Console.WriteLine("WELCOME TO THE WORLD OF GUESSING OF NUMBERS!!\n");
+            
+
+            while(true)
+            {
+                Console.Write("Enter your name to start the game: ");
+                Player loggedPlayer;
+
+                string name = Console.ReadLine();
+
+                bool userExist = players.Any(x => x.Name == name);
+
+                if (userExist)
+                {
+                    loggedPlayer = players.FirstOrDefault(x => x.Name == name);
+                } else
+                {
+                    loggedPlayer = new Player() { Name = name };
+                    players.Add(loggedPlayer);
+                }
+
+                int highScore = 0;
+
+                try
+                {
+                    highScore = loggedPlayer.GameRecords.Max(x => x.Score);
+                } catch
+                {
+                    highScore = 0;
+                }
+                
+
+                Console.WriteLine($"\n Welcome {loggedPlayer.Name}. Are you ready to start?");
+                Console.WriteLine($"Your best score is {highScore}. You played {loggedPlayer.TotalGameCount} games and won {loggedPlayer.WonGames} games!");
+
+                Console.WriteLine("Tap enter to start!");
+                string command = Console.ReadLine();
+
+                Console.WriteLine("Choose the hardness of the game: \n");
+
+                foreach (string opt in Enum.GetNames(typeof(Hardness)))
+                {
+                    Console.WriteLine(opt);
+                }
+
+                while (true)
+                {
+                    
+                    if(Enum.TryParse<Hardness>(Console.ReadLine(),true, out Hardness hardness)){
+                        var results = game.StartGame(loggedPlayer, hardness);
+
+                        GameRecord gameRecord = new GameRecord { Attempts = results.attempts, Score = results.score, Won = results.won, Hardness = hardness.ToString() };
+
+                        loggedPlayer.GameRecords.Add(gameRecord);
+                        break;
+                    }
+                }
+
+            }
 
 
         }
@@ -118,16 +228,7 @@ namespace ConsoleApp1
                 {
                     Console.WriteLine($"YOU LOST THE GAME. Score earned: {score}");
 
-
-                    GameRecord game = new GameRecord();
-                    game.Attempts = totalAttempts;
-                    game.Score = score;
-                    game.Hardness = hardness.ToString();
-                    game.Won = true;
-
-                    player.GameRecords.Add(game);
-
-                    break;
+                    return (false, score, totalAttempts);
                 }
 
                 if (tries == 4)
@@ -146,7 +247,7 @@ namespace ConsoleApp1
                 }
 
                 Console.WriteLine();
-                Console.Write($"Attempt {tries + 1}: ");
+                Console.Write($"Attempt {tries + 1}/{l1Attempts + tries}: ");
                 int input = int.Parse(Console.ReadLine());
 
                 if (input == level1Number)
@@ -191,7 +292,7 @@ namespace ConsoleApp1
             Console.Write("Do you want to continue? (y/n): ");
             string cntCmnd = Console.ReadLine().ToLower();
 
-            if(cntCmnd == "n") return (true, score, totalAttempts);
+            if (cntCmnd == "n") return (true, score, totalAttempts);
 
             //LEVEL 2 bashlayir
             Console.WriteLine($"LEVEL 2 STARTED - {hardness.ToString()}");
@@ -207,16 +308,7 @@ namespace ConsoleApp1
                 {
                     Console.WriteLine($"YOU LOST THE GAME. Score earned: {score}");
 
-
-                    GameRecord game = new GameRecord();
-                    game.Attempts = totalAttempts;
-                    game.Score = score;
-                    game.Hardness = hardness.ToString();
-                    game.Won = true;
-
-                    player.GameRecords.Add(game);
-
-                    break;
+                    return (false, score, totalAttempts);
                 }
 
                 if (tries == 5)
@@ -235,7 +327,7 @@ namespace ConsoleApp1
                 }
 
                 Console.WriteLine();
-                Console.Write($"Attempt {tries + 1}: ");
+                Console.Write($"Attempt {tries + 1}/{l2Attempts+tries}: ");
                 int input = int.Parse(Console.ReadLine());
 
                 if (input == level2Number)
@@ -296,16 +388,7 @@ namespace ConsoleApp1
                 {
                     Console.WriteLine($"YOU LOST THE GAME. Score earned: {score}");
 
-
-                    GameRecord game = new GameRecord();
-                    game.Attempts = totalAttempts;
-                    game.Score = score;
-                    game.Hardness = hardness.ToString();
-                    game.Won = true;
-
-                    player.GameRecords.Add(game);
-
-                    break;
+                    return (false, score, totalAttempts);
                 }
 
                 if (tries == 5)
@@ -324,11 +407,12 @@ namespace ConsoleApp1
                 }
 
                 Console.WriteLine();
-                Console.Write($"Attempt {tries + 1}: ");
+                Console.Write($"Attempt {tries + 1}/{l3Attempts+tries}: ");
                 int input = int.Parse(Console.ReadLine());
 
                 if (input == level3Number)
                 {
+                    totalAttempts++;
                     int earnedScore = l3Attempts * emsal * 10;
                     score += earnedScore;
                     Console.WriteLine();
@@ -339,9 +423,9 @@ namespace ConsoleApp1
                     Console.WriteLine($"Game is finished in {totalAttempts} attempts.");
                     Console.WriteLine($"Total score is {score}.");
 
-                    totalAttempts++;
+                    
                     tries = 0;
-                    break;
+                    return (true, score, totalAttempts);
                 }
                 else if (input > level3Number)
                 {
@@ -367,8 +451,8 @@ namespace ConsoleApp1
 
             }
 
-            return (true, 0, 0);
-        }        
+            return (false, score, totalAttempts);
+        }
     }
 
 
