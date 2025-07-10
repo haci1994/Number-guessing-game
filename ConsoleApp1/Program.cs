@@ -6,6 +6,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Game game = new Game();
             List<Player> players = new List<Player>
             {
@@ -60,7 +61,7 @@ namespace ConsoleApp1
                 }
             };
 
-            Console.WriteLine("WELCOME TO THE WORLD OF GUESSING OF NUMBERS!!\n");
+            Console.WriteLine("🔹🔹🔹 WELCOME TO THE WORLD OF GUESSING OF NUMBERS 🔹🔹🔹\n");
             
 
             while(true)
@@ -68,7 +69,24 @@ namespace ConsoleApp1
                 Console.Write("Enter your name to start the game: ");
                 Player loggedPlayer;
 
-                string name = Console.ReadLine();
+                //string name = Console.ReadLine();
+
+                string name;
+                while (true)
+                {
+                    Console.Write("Enter your name: ");
+                    name = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("❌ Name cannot be empty. Please enter a valid name.");
+                    }
+                }
+
 
                 bool userExist = players.Any(x => x.Name == name);
 
@@ -248,7 +266,23 @@ namespace ConsoleApp1
 
                 Console.WriteLine();
                 Console.Write($"Attempt {tries + 1}/{l1Attempts + tries}: ");
-                int input = int.Parse(Console.ReadLine());
+                //int input = int.Parse(Console.ReadLine());
+
+                int input;
+                while (true)
+                {
+                    string userInput = Console.ReadLine();
+
+                    if (int.TryParse(userInput, out input))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("❌ Only integer numbers are allowed. Please try again.");
+                    }
+                }
+
 
                 if (input == level1Number)
                 {
@@ -328,7 +362,24 @@ namespace ConsoleApp1
 
                 Console.WriteLine();
                 Console.Write($"Attempt {tries + 1}/{l2Attempts+tries}: ");
-                int input = int.Parse(Console.ReadLine());
+
+                //int input = int.Parse(Console.ReadLine());
+
+                int input;
+                while (true)
+                {
+                    string userInput = Console.ReadLine();
+
+                    if (int.TryParse(userInput, out input))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("❌ Only integer numbers are allowed. Please try again.");
+                    }
+                }
+
 
                 if (input == level2Number)
                 {
@@ -408,7 +459,25 @@ namespace ConsoleApp1
 
                 Console.WriteLine();
                 Console.Write($"Attempt {tries + 1}/{l3Attempts+tries}: ");
-                int input = int.Parse(Console.ReadLine());
+
+                //int input = int.Parse(Console.ReadLine());
+
+                int input;
+                while (true)
+                {
+                    Console.Write("Enter a number: ");
+                    string userInput = Console.ReadLine();
+
+                    if (int.TryParse(userInput, out input))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("❌ Only integer numbers are allowed. Please try again.");
+                    }
+                }
+
 
                 if (input == level3Number)
                 {
