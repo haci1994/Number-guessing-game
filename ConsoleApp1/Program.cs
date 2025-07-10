@@ -41,6 +41,7 @@ namespace ConsoleApp1
 
     public class GameRecord
     {
+        public DateTime DateTime { get; set; } = DateTime.Now;
         public string Hardness { get; set; }
         public int Attempts { get; set; }
         public int Score { get; set; }
@@ -192,13 +193,183 @@ namespace ConsoleApp1
 
             if(cntCmnd == "n") return (true, score, totalAttempts);
 
+            //LEVEL 2 bashlayir
+            Console.WriteLine($"LEVEL 2 STARTED - {hardness.ToString()}");
+            Console.WriteLine($"Lives: {lives} | Score: {score}");
+            Console.WriteLine();
+
+            int level2Number = rand.Next(1, l2RandLimit);
+            tries = 0;
+
+            while (true)
+            {
+                if (lives == 0)
+                {
+                    Console.WriteLine($"YOU LOST THE GAME. Score earned: {score}");
 
 
+                    GameRecord game = new GameRecord();
+                    game.Attempts = totalAttempts;
+                    game.Score = score;
+                    game.Hardness = hardness.ToString();
+                    game.Won = true;
 
-            return (true, 0, 0);           
+                    player.GameRecords.Add(game);
 
-        }
+                    break;
+                }
 
-        
+                if (tries == 5)
+                {
+                    lives--;
+                    Console.WriteLine();
+                    Console.WriteLine("You LOST 1 heart.");
+                    Console.WriteLine($"The number was: {level2Number}");
+                    Console.WriteLine($"Lives: {lives} | Score: {score}");
+                    Console.WriteLine();
+                    tries = 0;
+                    l2Attempts = 4;
+                    level2Number = rand.Next(1, l2RandLimit);
+
+                    continue;
+                }
+
+                Console.WriteLine();
+                Console.Write($"Attempt {tries + 1}: ");
+                int input = int.Parse(Console.ReadLine());
+
+                if (input == level2Number)
+                {
+                    int earnedScore = l2Attempts * emsal * 10;
+                    score += earnedScore;
+                    Console.WriteLine();
+                    Console.WriteLine("You guessed the number!");
+                    Console.WriteLine("LEVEL 2 Completed!");
+                    Console.WriteLine($"You earned {earnedScore} score.");
+                    Console.WriteLine($"Total score is {score}.");
+
+                    totalAttempts++;
+                    tries = 0;
+                    break;
+                }
+                else if (input > level2Number)
+                {
+                    //Console.WriteLine();
+                    if (tries < 3) Console.WriteLine("Try less number");
+                    l2Attempts--;
+                    tries++;
+                    totalAttempts++;
+                }
+                else if (input < level2Number)
+                {
+                    //Console.WriteLine();
+                    if (tries < 3) Console.WriteLine("Try bigger number");
+                    l2Attempts--;
+                    tries++;
+                    totalAttempts++;
+                }
+
+                if (Math.Abs(input - level2Number) <= 3)
+                {
+                    if (tries < 4) Console.WriteLine("❤️ Too close to the number!");
+                }
+
+            }
+
+            Console.WriteLine();
+            Console.Write("Do you want to continue? (y/n): ");
+            cntCmnd = Console.ReadLine().ToLower();
+
+            if (cntCmnd == "n") return (true, score, totalAttempts);
+
+            //LEVEL 3 bashlayir
+            Console.WriteLine($"LEVEL 3 STARTED - {hardness.ToString()}");
+            Console.WriteLine($"Lives: {lives} | Score: {score}");
+            Console.WriteLine();
+
+            int level3Number = rand.Next(1, l3RandLimit);
+            tries = 0;
+
+            while (true)
+            {
+                if (lives == 0)
+                {
+                    Console.WriteLine($"YOU LOST THE GAME. Score earned: {score}");
+
+
+                    GameRecord game = new GameRecord();
+                    game.Attempts = totalAttempts;
+                    game.Score = score;
+                    game.Hardness = hardness.ToString();
+                    game.Won = true;
+
+                    player.GameRecords.Add(game);
+
+                    break;
+                }
+
+                if (tries == 5)
+                {
+                    lives--;
+                    Console.WriteLine();
+                    Console.WriteLine("You LOST 1 heart.");
+                    Console.WriteLine($"The number was: {level3Number}");
+                    Console.WriteLine($"Lives: {lives} | Score: {score}");
+                    Console.WriteLine();
+                    tries = 0;
+                    l3Attempts = 4;
+                    level3Number = rand.Next(1, l3RandLimit);
+
+                    continue;
+                }
+
+                Console.WriteLine();
+                Console.Write($"Attempt {tries + 1}: ");
+                int input = int.Parse(Console.ReadLine());
+
+                if (input == level3Number)
+                {
+                    int earnedScore = l3Attempts * emsal * 10;
+                    score += earnedScore;
+                    Console.WriteLine();
+                    Console.WriteLine("You guessed the number!");
+                    Console.WriteLine("LEVEL 3 Completed!");
+                    Console.WriteLine($"You earned {earnedScore} score.");
+                    Console.WriteLine();
+                    Console.WriteLine($"Game is finished in {totalAttempts} attempts.");
+                    Console.WriteLine($"Total score is {score}.");
+
+                    totalAttempts++;
+                    tries = 0;
+                    break;
+                }
+                else if (input > level3Number)
+                {
+                    //Console.WriteLine();
+                    if (tries < 3) Console.WriteLine("Try less number");
+                    l3Attempts--;
+                    tries++;
+                    totalAttempts++;
+                }
+                else if (input < level3Number)
+                {
+                    //Console.WriteLine();
+                    if (tries < 3) Console.WriteLine("Try bigger number");
+                    l3Attempts--;
+                    tries++;
+                    totalAttempts++;
+                }
+
+                if (Math.Abs(input - level3Number) <= 3)
+                {
+                    if (tries < 4) Console.WriteLine("❤️ Too close to the number!");
+                }
+
+            }
+
+            return (true, 0, 0);
+        }        
     }
+
+
 }
