@@ -8,6 +8,8 @@ namespace ConsoleApp1
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Game game = new Game();
+
+            //Listi AI ile yazmisham
             List<Player> players = new List<Player>
             {
                 new Player
