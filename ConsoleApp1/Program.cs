@@ -64,83 +64,136 @@ namespace ConsoleApp1
             };
 
             Console.WriteLine("🔹🔹🔹 WELCOME TO THE WORLD OF GUESSING OF NUMBERS 🔹🔹🔹\n");
-            
 
-            while(true)
+
+            Console.Write("Enter your name to start the game: ");
+            Player loggedPlayer;
+
+            string name;
+            while (true)
             {
-                Console.Write("Enter your name to start the game: ");
-                Player loggedPlayer;
+                name = Console.ReadLine();
 
-                //string name = Console.ReadLine();
-
-                string name;
-                while (true)
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    Console.Write("Enter your name: ");
-                    name = Console.ReadLine();
-
-                    if (!string.IsNullOrWhiteSpace(name))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("❌ Name cannot be empty. Please enter a valid name.");
-                    }
+                    break;
                 }
-
-
-                bool userExist = players.Any(x => x.Name == name);
-
-                if (userExist)
+                else
                 {
-                    loggedPlayer = players.FirstOrDefault(x => x.Name == name);
-                } else
-                {
-                    loggedPlayer = new Player() { Name = name };
-                    players.Add(loggedPlayer);
+                    Console.WriteLine("❌ Name cannot be empty. Please enter a valid name.");
                 }
+            }
 
+            bool userExist = players.Any(x => x.Name == name);
+
+            if (userExist)
+            {
+                loggedPlayer = players.FirstOrDefault(x => x.Name == name);
+            }
+            else
+            {
+                loggedPlayer = new Player() { Name = name };
+                players.Add(loggedPlayer);
+            }
+
+            // 🟢 BURDAN ETİBARƏN DAXİL OLDUQDAN SONRA ARTIQ YENİDƏN AD SORUŞULMUR
+            while (true)
+            {
                 int highScore = 0;
 
                 try
                 {
                     highScore = loggedPlayer.GameRecords.Max(x => x.Score);
-                } catch
+                }
+                catch
                 {
                     highScore = 0;
                 }
-                
 
-                Console.WriteLine($"\n Welcome {loggedPlayer.Name}. Are you ready to start?");
+                Console.Clear();
+                Console.WriteLine("🔹🔹🔹 WELCOME TO THE WORLD OF GUESSING OF NUMBERS 🔹🔹🔹\n");
+                Console.WriteLine($"\n Welcome {loggedPlayer.Name}.");
                 Console.WriteLine($"Your best score is {highScore}. You played {loggedPlayer.TotalGameCount} games and won {loggedPlayer.WonGames} games!");
 
-                Console.WriteLine("Tap enter to start!");
+                Console.WriteLine("\nPlease choose an option:");
+                Console.WriteLine("[1] Start Game");
+                Console.WriteLine("[2] Statistics");
+                Console.Write("Enter your choice: ");
+
                 string command = Console.ReadLine();
 
-                Console.WriteLine("Choose the hardness of the game: \n");
-
-                foreach (string opt in Enum.GetNames(typeof(Hardness)))
+                switch (command)
                 {
-                    Console.WriteLine(opt);
-                }
+                    case "1":
+                        Console.Clear();
+                        
 
-                while (true)
-                {
-                    
-                    if(Enum.TryParse<Hardness>(Console.ReadLine(),true, out Hardness hardness)){
-                        var results = game.StartGame(loggedPlayer, hardness);
+                        foreach (string opt in Enum.GetNames(typeof(Hardness)))
+                        {
+                            Console.WriteLine($"- {opt}");
+                        }
 
-                        GameRecord gameRecord = new GameRecord { Attempts = results.attempts, Score = results.score, Won = results.won, Hardness = hardness.ToString() };
+                        Console.Write("\n Choose the hardness of the game: \n");
 
-                        loggedPlayer.GameRecords.Add(gameRecord);
+                        while (true)
+                        {
+                            string input = Console.ReadLine();
+
+                            if (Enum.TryParse<Hardness>(input, true, out Hardness hardness))
+                            {
+                                var results = game.StartGame(loggedPlayer, hardness);
+
+                                GameRecord gameRecord = new GameRecord
+                                {
+                                    Attempts = results.attempts,
+                                    Score = results.score,
+                                    Won = results.won,
+                                    Hardness = hardness.ToString()
+                                };
+
+                                loggedPlayer.GameRecords.Add(gameRecord);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("❌ Invalid input. Please type one of the following options:");
+                                foreach (string hrd in Enum.GetNames(typeof(Hardness)))
+                                {
+                                    Console.WriteLine($"- {hrd}");
+                                }
+                                Console.Write("Try again: ");
+                            }
+                        }
                         break;
-                    }
+
+
+                    case "2":
+                        Console.Clear();
+                        Console.WriteLine($"Statistics for {loggedPlayer.Name}:\n");
+
+                        if (loggedPlayer.GameRecords.Count == 0)
+                        {
+                            Console.WriteLine("No game records found.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{"Date",-20} | {"Hardness",-12} | {"Score",-5} | {"Attempts",-9} | {"Won",-5}");
+                            Console.WriteLine("-----------------------------------------------------------------");
+                            foreach (var rec in loggedPlayer.GameRecords)
+                            {
+                                Console.WriteLine($"{rec.DateTime,-20} | {rec.Hardness,-12} | {rec.Score,-5} | {rec.Attempts,-9} | {(rec.Won ? "Yes" : "No"),-5}");
+                            }
+                        }
+
+                        Console.WriteLine("\nPress ENTER to go back to menu.");
+                        Console.ReadLine();
+                        break;
+
+                    default:
+                        Console.WriteLine("❌ Invalid option. Please try again.");
+                        break;
                 }
-
             }
-
-
         }
     }
 
@@ -235,6 +288,7 @@ namespace ConsoleApp1
 
 
             //LEVEL 1 bashlayir
+            Console.Clear();
             Console.WriteLine($"LEVEL 1 STARTED - {hardness.ToString()}");
             Console.WriteLine($"Lives: {lives} | Score: {score}");
             Console.WriteLine();
@@ -331,6 +385,7 @@ namespace ConsoleApp1
             if (cntCmnd == "n") return (true, score, totalAttempts);
 
             //LEVEL 2 bashlayir
+            Console.Clear();
             Console.WriteLine($"LEVEL 2 STARTED - {hardness.ToString()}");
             Console.WriteLine($"Lives: {lives} | Score: {score}");
             Console.WriteLine();
@@ -356,14 +411,14 @@ namespace ConsoleApp1
                     Console.WriteLine($"Lives: {lives} | Score: {score}");
                     Console.WriteLine();
                     tries = 0;
-                    l2Attempts = 4;
+                    l2Attempts = 5;
                     level2Number = rand.Next(1, l2RandLimit);
 
                     continue;
                 }
 
                 Console.WriteLine();
-                Console.Write($"Attempt {tries + 1}/{l2Attempts+tries}: ");
+                Console.Write($"Attempt {tries + 1}/{l2Attempts + tries}: ");
 
                 //int input = int.Parse(Console.ReadLine());
 
@@ -400,7 +455,7 @@ namespace ConsoleApp1
                 else if (input > level2Number)
                 {
                     //Console.WriteLine();
-                    if (tries < 3) Console.WriteLine("Try less number");
+                    if (tries < 4) Console.WriteLine("Try less number");
                     l2Attempts--;
                     tries++;
                     totalAttempts++;
@@ -408,7 +463,7 @@ namespace ConsoleApp1
                 else if (input < level2Number)
                 {
                     //Console.WriteLine();
-                    if (tries < 3) Console.WriteLine("Try bigger number");
+                    if (tries < 4) Console.WriteLine("Try bigger number");
                     l2Attempts--;
                     tries++;
                     totalAttempts++;
@@ -416,7 +471,7 @@ namespace ConsoleApp1
 
                 if (Math.Abs(input - level2Number) <= 3)
                 {
-                    if (tries < 4) Console.WriteLine("❤️ Too close to the number!");
+                    if (tries < 5) Console.WriteLine("❤️ Too close to the number!");
                 }
 
             }
@@ -428,6 +483,7 @@ namespace ConsoleApp1
             if (cntCmnd == "n") return (true, score, totalAttempts);
 
             //LEVEL 3 bashlayir
+            Console.Clear();
             Console.WriteLine($"LEVEL 3 STARTED - {hardness.ToString()}");
             Console.WriteLine($"Lives: {lives} | Score: {score}");
             Console.WriteLine();
@@ -444,7 +500,7 @@ namespace ConsoleApp1
                     return (false, score, totalAttempts);
                 }
 
-                if (tries == 5)
+                if (tries == 6)
                 {
                     lives--;
                     Console.WriteLine();
@@ -453,14 +509,14 @@ namespace ConsoleApp1
                     Console.WriteLine($"Lives: {lives} | Score: {score}");
                     Console.WriteLine();
                     tries = 0;
-                    l3Attempts = 4;
+                    l3Attempts = 6;
                     level3Number = rand.Next(1, l3RandLimit);
 
                     continue;
                 }
 
                 Console.WriteLine();
-                Console.Write($"Attempt {tries + 1}/{l3Attempts+tries}: ");
+                Console.Write($"Attempt {tries + 1}/{l3Attempts + tries}: ");
 
                 //int input = int.Parse(Console.ReadLine());
 
@@ -486,7 +542,7 @@ namespace ConsoleApp1
                     totalAttempts++;
                     int earnedScore = l3Attempts * emsal * 10;
                     score += earnedScore;
-                    Console.WriteLine();
+                    Console.Clear();
                     Console.WriteLine("You guessed the number!");
                     Console.WriteLine("LEVEL 3 Completed!");
                     Console.WriteLine($"You earned {earnedScore} score.");
@@ -494,14 +550,17 @@ namespace ConsoleApp1
                     Console.WriteLine($"Game is finished in {totalAttempts} attempts.");
                     Console.WriteLine($"Total score is {score}.");
 
-                    
+                    Console.WriteLine();
+                    Console.WriteLine("Tap ENTER to continue");
+                    string command = Console.ReadLine();
+                    if (command != "uywoiehfjksdkjfhsdjhkgfjshf") command = "defe";
                     tries = 0;
                     return (true, score, totalAttempts);
                 }
                 else if (input > level3Number)
                 {
                     //Console.WriteLine();
-                    if (tries < 3) Console.WriteLine("Try less number");
+                    if (tries < 5) Console.WriteLine("Try less number");
                     l3Attempts--;
                     tries++;
                     totalAttempts++;
@@ -509,7 +568,7 @@ namespace ConsoleApp1
                 else if (input < level3Number)
                 {
                     //Console.WriteLine();
-                    if (tries < 3) Console.WriteLine("Try bigger number");
+                    if (tries < 5) Console.WriteLine("Try bigger number");
                     l3Attempts--;
                     tries++;
                     totalAttempts++;
@@ -517,7 +576,7 @@ namespace ConsoleApp1
 
                 if (Math.Abs(input - level3Number) <= 3)
                 {
-                    if (tries < 4) Console.WriteLine("❤️ Too close to the number!");
+                    if (tries < 6) Console.WriteLine("❤️ Too close to the number!");
                 }
 
             }
